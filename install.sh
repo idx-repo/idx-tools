@@ -18,7 +18,7 @@ then
 fi
 if [ ! -d "$HOME/.idx-data" ]
 then
- git clone https://github.com/idx-repo/idx-data.git ~/.idx-data
+ git clone --depth=1 https://github.com/idx-repo/idx-data.git ~/.idx-data
 else
  idxdata-update
 fi
