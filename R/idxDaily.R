@@ -26,4 +26,5 @@ dataset$emiten = opt$e
 #print(head(dataset, 5))
 names(dataset) = c('Open','High','Low','Close','Volume','Adjusted',
                    'Date','Emiten')
+dataset = dataset[,c('Open','High','Low','Close','Volume','Date','Emiten')]
 write.csv(dataset, file=opt$o, row.names = FALSE)

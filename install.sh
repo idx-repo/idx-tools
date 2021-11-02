@@ -4,9 +4,11 @@ echo "Install idx-tools to $HOME/bin"
 
 chmod +x R/idxDaily.R
 chmod +x Bash/update-data.sh
+chmod +x Bash/update-csv.sh
 
 ln -sf `pwd`/R/idxDaily.R $HOME/bin/idxDaily
 ln -sf `pwd`/Bash/update-data.sh $HOME/bin/idxdata-update
+ln -sf `pwd`/Bash/update-csv.sh $HOME/bin/csvdata-update
 
 if [ ! -d "$HOME/R/x86_64-suse-linux-gnu-library/4.1/optparse" ]
 then
