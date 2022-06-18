@@ -3,21 +3,16 @@
 echo "Install idx-tools to $HOME/bin"
 
 chmod +x R/idxDaily.R
+chmod +x R/install-deps.R
 chmod +x Bash/update-data.sh
 chmod +x Bash/update-csv.sh
 
 ln -sf `pwd`/R/idxDaily.R $HOME/bin/idxDaily
+ln -sf `pwd`/R/install-deps.R $HOME/bin/idx-deps
 ln -sf `pwd`/Bash/update-data.sh $HOME/bin/idxdata-update
 ln -sf `pwd`/Bash/update-csv.sh $HOME/bin/csvdata-update
 
-if [ ! -d "$HOME/R/x86_64-suse-linux-gnu-library/4.1/optparse" ]
-then
- Rscript -e 'install.packages("optparse", repos="http://cran.r-project.org")'
-fi
-if [ ! -d "$HOME/R/x86_64-suse-linux-gnu-library/4.1/quantmod" ]
-then
- Rscript -e 'install.packages("quantmod", repos="http://cran.r-project.org")'
-fi
+idx-deps
 if [ ! -d "$HOME/.idx-data" ]
 then
  git clone --depth=1 https://github.com/idx-repo/idx-data.git ~/.idx-data
