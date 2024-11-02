@@ -9,4 +9,5 @@ rm -rf $HOME/bin/idx30data-update
 rm -rf $HOME/bin/lq45data-update
 rm -rf $HOME/bin/idx80data-update
 rm -rf $HOME/bin/issidata-update
+rm -rf $HOME/bin/idxic-update
 rm -rf $HOME/.idx-data
