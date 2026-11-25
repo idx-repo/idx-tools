@@ -1,5 +1,7 @@
 # idx-tools
 
+[![CI](https://github.com/asepkcakep/idx-tools/actions/workflows/ci.yml/badge.svg)](https://github.com/asepkcakep/idx-tools/actions/workflows/ci.yml)
+
 Tools for updating and analyzing Indonesia Stock Exchange (IDX) historical daily prices.
 
 ## Tools List

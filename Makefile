@@ -7,6 +7,10 @@ test:
 
 lint:
 	@bash tests/test_syntax.sh
+	@if command -v shellcheck >/dev/null 2>&1; then \
+		echo "Running shellcheck..."; \
+		shellcheck -x -e SC1091 Bash/*.sh tests/*.sh install.sh remove.sh; \
+	fi
 
 install:
 	@sh install.sh
