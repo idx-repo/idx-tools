@@ -1,6 +1,3 @@
-#!/bin/bash
-for i in $(cut -d "|" -f 1 $HOME/.idx-data/Index/LQ45.csv | tr -d '"' | tail -n +2)
-do
- echo "Update $i"
- idxDaily -e $i -o "$i.csv"
-done
+#!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "$SCRIPT_DIR/update-index.sh" -i LQ45 "$@"

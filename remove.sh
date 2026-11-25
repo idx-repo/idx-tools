@@ -5,6 +5,7 @@ rm -rf $HOME/bin/idx-deps
 rm -rf $HOME/bin/plotDaily
 rm -rf $HOME/bin/idxdata-update
 rm -rf $HOME/bin/csvdata-update
+rm -rf $HOME/bin/idxindex-update
 rm -rf $HOME/bin/idx30data-update
 rm -rf $HOME/bin/lq45data-update
 rm -rf $HOME/bin/idx80data-update
