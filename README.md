@@ -102,3 +102,18 @@ idxDaily -e BBCA -o BBCA.csv --verbose
 # Generate chart for past 365 days
 plotDaily -e BBCA -o BBCA.png -d 365
 ```
+
+## Running Tests
+
+A comprehensive test suite is provided in `tests/`:
+
+```bash
+# Run all test suites
+make test
+# or directly:
+bash tests/run_tests.sh
+
+# Run syntax/lint checks
+make lint
+```
+
