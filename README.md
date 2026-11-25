@@ -119,3 +119,13 @@ bash tests/run_tests.sh
 make lint
 ```
 
+## Scheduled Weekly Auto-Update
+
+A GitHub Actions workflow is pre-configured in [`.github/workflows/weekly-update.yml`](.github/workflows/weekly-update.yml):
+
+- **Schedule**: Runs automatically every Saturday at `01:00 UTC` (`08:00 WIB`), safely after the weekly market closes.
+- **Manual Trigger**: Can be run on demand from the GitHub **Actions** tab with configurable targets (`IDX30`, `LQ45`, `IDX80`, `ISSI`, or `all`) and custom request `--lag`.
+- **Artifacts**: Downloaded CSV files are automatically archived as workflow run artifacts (available to download for 30 days).
+- **Auto Push (Optional)**: If you provide a GitHub Personal Access Token named `DATA_REPO_TOKEN` in Repository Secrets, the action will automatically commit and push updated data directly back to the `idx-data` repository.
+
+
