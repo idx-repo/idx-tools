@@ -123,5 +123,13 @@ test_case "Wrapper: update-idxic.sh A"
 out="$("$REPO_ROOT/Bash/update-idxic.sh" A -d "$FIXTURE_DATA" -n)"
 assert_contains "$out" "[dry-run] Would update AALI -> ./AALI.csv"
 
+test_case "Lag option validation (--lag=abc should fail)"
+out="$("$REPO_ROOT/Bash/update-index.sh" --lag=abc 2>&1 || true)"
+assert_contains "$out" "requires a numeric seconds argument"
+
+test_case "Lag option with dry-run verbose logging (--lag=1.5 -v -n)"
+out="$("$REPO_ROOT/Bash/update-index.sh" IDX30 -d "$FIXTURE_DATA" --lag=1.5 -v -n)"
+assert_contains "$out" "[dry-run] Would sleep for 1.5s (lag)"
+
 report_suite_results "update-index.sh & Wrappers"
 exit $?

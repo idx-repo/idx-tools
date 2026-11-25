@@ -11,6 +11,7 @@ DRY_RUN=false
 VERBOSE=false
 QUIET=false
 LIMIT=0
+LAG="${IDX_REQUEST_LAG:-0}"
 
 show_usage() {
   cat << EOF
@@ -20,6 +21,7 @@ Options:
   -d, --data-dir <DIR>     Path to idx-data directory (default: \$IDX_DATA_DIR or ~/.idx-data)
   -o, --output-dir <DIR>   Output directory for CSV files (default: <DATA_DIR>/Daily_Price)
   -l, --limit <NUMBER>     Limit the number of files to update (useful for batching/testing)
+  -w, --lag <SECONDS>      Delay/lag between requests to prevent rate limiting (default: \$IDX_REQUEST_LAG or 0)
   -n, --dry-run            Simulate without downloading CSV data
   -v, --verbose            Show verbose debug output
   -q, --quiet              Suppress standard output messages
@@ -29,6 +31,7 @@ Examples:
   $(basename "$0")
   $(basename "$0") -o ./data -n
   $(basename "$0") --limit=10 --verbose
+  $(basename "$0") --lag=1.5
 EOF
 }
 
@@ -65,6 +68,23 @@ while [[ $# -gt 0 ]]; do
       ;;
     -q|--quiet)
       QUIET=true
+      shift
+      ;;
+    -w|--lag|--delay)
+      if [[ $# -lt 2 || ! "$2" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        log_error "Option '$1' requires a numeric seconds argument."
+        exit 1
+      fi
+      LAG="$2"
+      shift 2
+      ;;
+    --lag=*|--delay=*)
+      val="${1#*=}"
+      if [[ ! "$val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        log_error "Option '${1%%=*}' requires a numeric seconds argument."
+        exit 1
+      fi
+      LAG="$val"
       shift
       ;;
     -d|--data-dir)
@@ -184,11 +204,18 @@ for file in "${FILES[@]}"; do
 
   if [[ "$DRY_RUN" == true ]]; then
     log_info "[dry-run] Would update $emiten -> $out_file"
+    if [[ "$LAG" != "0" && "$LAG" != "0.0" ]]; then
+      log_verbose "[dry-run] Would sleep for ${LAG}s (lag)"
+    fi
   else
     log_info "Update $emiten"
     if ! $IDX_DAILY_CMD -e "$emiten" -o "$out_file"; then
       log_error "Failed to update $emiten"
       FAILURES=$((FAILURES + 1))
+    fi
+    if [[ "$LAG" != "0" && "$LAG" != "0.0" ]]; then
+      log_verbose "Waiting ${LAG}s before next request (lag)..."
+      sleep "$LAG"
     fi
   fi
 

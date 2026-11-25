@@ -54,11 +54,11 @@ All scripts feature robust command-line argument parsing supporting both `-o val
 ### 1. Update Index Constituents (`idxindex-update`)
 
 ```bash
-# Update IDX30 constituents
-idxindex-update IDX30
+# Update IDX30 constituents with 1 second lag between requests
+idxindex-update IDX30 --lag=1
 
-# Update LQ45 into a specific folder with verbose logging
-idxindex-update -i LQ45 -o ./my-data --verbose
+# Update LQ45 into a specific folder with verbose logging and 0.5s delay
+idxindex-update -i LQ45 -o ./my-data -w 0.5 --verbose
 
 # Update IDX-IC sector A
 idxindex-update -c A

@@ -55,5 +55,13 @@ status=$?
 assert_exit_code 0 "$status"
 assert_contains "$out" "No CSV files found"
 
+test_case "Lag option validation (--lag=abc should fail)"
+out="$("$REPO_ROOT/Bash/update-csv.sh" --lag=abc 2>&1 || true)"
+assert_contains "$out" "requires a numeric seconds argument"
+
+test_case "Lag option with dry-run verbose logging (--lag=0.5 -v -n)"
+out="$("$REPO_ROOT/Bash/update-csv.sh" -d "$FIXTURE_DATA" --lag=0.5 -v -n)"
+assert_contains "$out" "[dry-run] Would sleep for 0.5s (lag)"
+
 report_suite_results "update-csv.sh"
 exit $?

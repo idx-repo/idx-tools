@@ -11,6 +11,7 @@ OUTPUT_DIR="."
 DRY_RUN=false
 VERBOSE=false
 QUIET=false
+LAG="${IDX_REQUEST_LAG:-0}"
 TARGET_TYPE=""
 TARGET_VALUE=""
 FILE_PATH=""
@@ -25,6 +26,7 @@ Options:
   -f, --file <PATH>        Custom index or sector file path
   -o, --output-dir <DIR>   Directory to save CSV files (default: .)
   -d, --data-dir <DIR>     Path to idx-data directory (default: \$IDX_DATA_DIR or ~/.idx-data)
+  -w, --lag <SECONDS>      Delay/lag between requests to prevent rate limiting (default: \$IDX_REQUEST_LAG or 0)
   -n, --dry-run            Simulate without downloading CSV data
   -v, --verbose            Show verbose debug output
   -q, --quiet              Suppress standard output messages
@@ -32,8 +34,8 @@ Options:
 
 Examples:
   $(basename "$0") IDX30
-  $(basename "$0") -i LQ45 -o ./data
-  $(basename "$0") --index=IDX80
+  $(basename "$0") -i LQ45 -o ./data --lag=1
+  $(basename "$0") --index=IDX80 -w 0.5
   $(basename "$0") -c A
   $(basename "$0") --idxic=B
   $(basename "$0") -f /path/to/Index.csv --output-dir=./output
@@ -97,6 +99,23 @@ while [[ $# -gt 0 ]]; do
       ;;
     -q|--quiet)
       QUIET=true
+      shift
+      ;;
+    -w|--lag|--delay)
+      if [[ $# -lt 2 || ! "$2" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        log_error "Option '$1' requires a numeric seconds argument."
+        exit 1
+      fi
+      LAG="$2"
+      shift 2
+      ;;
+    --lag=*|--delay=*)
+      val="${1#*=}"
+      if [[ ! "$val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        log_error "Option '${1%%=*}' requires a numeric seconds argument."
+        exit 1
+      fi
+      LAG="$val"
       shift
       ;;
     -i|--index)
@@ -281,11 +300,18 @@ for code in $CODES; do
   out_file="$OUTPUT_DIR/${code}.csv"
   if [[ "$DRY_RUN" == true ]]; then
     log_info "[dry-run] Would update $code -> $out_file"
+    if [[ "$LAG" != "0" && "$LAG" != "0.0" ]]; then
+      log_verbose "[dry-run] Would sleep for ${LAG}s (lag)"
+    fi
   else
     log_info "Update $code"
     if ! $IDX_DAILY_CMD -e "$code" -o "$out_file"; then
       log_error "Failed to update $code"
       FAILURES=$((FAILURES + 1))
+    fi
+    if [[ "$LAG" != "0" && "$LAG" != "0.0" ]]; then
+      log_verbose "Waiting ${LAG}s before next request (lag)..."
+      sleep "$LAG"
     fi
   fi
 done
